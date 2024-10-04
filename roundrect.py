@@ -7,11 +7,16 @@ press ctrl-c to quit
 
 import time
 import numpy as np
+
 try:
     import unicornhathd
 except ImportError:
-    from unicorn_hat_sim import unicornhathd
-# todo: make sure it fails if neither import works
+    try:
+        from unicorn_hat_sim import unicornhathd
+    except ImportError as exc:
+        raise ImportError(
+            "Neither unicornhathd nor unicorn_hat_sim could be imported."
+        ) from exc
 
 
 def fade_in():
@@ -97,15 +102,21 @@ def main():
                     if uhat[point_x, point_y] == 0:
                         point_r, point_g, point_b = black
                     elif uhat[point_x, point_y] == 1:
-                        point_r, point_g, point_b = (color[0] * 0.5), \
-                                                    (color[1] * 0.5), \
-                                                    (color[2] * 0.5)
+                        point_r, point_g, point_b = (
+                            (color[0] * 0.5),
+                            (color[1] * 0.5),
+                            (color[2] * 0.5),
+                        )
                     elif uhat[point_x, point_y] == 2:
                         point_r, point_g, point_b = color
                     unicornhathd.set_pixel(point_x, point_y, point_r, point_g, point_b)
-            unicornhathd.set_pixel(0, 0, 255, 255, 255) # testing orientation with unicorn_hat_sim
+            unicornhathd.set_pixel(
+                0, 0, 255, 255, 255
+            )  # testing orientation with unicorn_hat_sim
             fade_in()
-            unicornhathd.set_pixel(0, 0, 0, 0, 0) # testing orientation with unicorn_hat_sim
+            unicornhathd.set_pixel(
+                0, 0, 0, 0, 0
+            )  # testing orientation with unicorn_hat_sim
             fade_out()
     except KeyboardInterrupt:
         unicornhathd.off()
